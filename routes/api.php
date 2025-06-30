@@ -26,13 +26,14 @@ use App\Http\Controllers\Api\CustomFieldController;
 
 Route::post('/login', [AuthController::class, 'login']);
 
+Route::post('/ticket_create', [TicketController::class, 'store']);
+Route::get('/category', [CategoryController::class, 'index']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/home', [HomeController::class, 'index']);
 
     Route::post('/ticket', [TicketController::class, 'index']);
-    Route::post('/ticket_create', [TicketController::class, 'store']);
     Route::post('/ticket_update', [TicketController::class, 'update']);
     Route::post('/ticket_delete', [TicketController::class, 'destroy']);
 
@@ -40,7 +41,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/replayticket', [TicketController::class, 'replayTicket']);
     Route::get('/ticketstatus', [TicketController::class, 'ticketStatus']);
 
-    Route::get('/category', [CategoryController::class, 'index']);
+
     Route::post('/getcategory', [CategoryController::class, 'getcategory']);
     Route::post('/create_category', [CategoryController::class, 'store']);
     Route::post('/update_category', [CategoryController::class, 'update']);

@@ -760,11 +760,17 @@ if (!function_exists('generateUniqueSlug')) {
 if (!function_exists('creatorId')) {
     function creatorId()
     {
-        if (Auth::user()->type == 'admin') {
-            return Auth::user()->id;
+        $id = null;
+        if (Auth::user()?->type == 'admin') {
+            $id = Auth::user()->id;
         } else {
-            return Auth::user()->created_by;
+            $id = Auth::user()?->created_by;
         }
+        if ($id) {
+            return $id;
+        }
+        $id = User::where('type', 'admin')->first()?->id;
+        return $id;
     }
 }
 
