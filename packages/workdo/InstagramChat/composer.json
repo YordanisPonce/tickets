@@ -1,0 +1,26 @@
+{
+    "name": "workdo/instagram-chat",
+    "description": "Description for instagram-chat package",
+    "type": "library",
+    "license": "MIT",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Workdo\\InstagramChat\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "WorkDo",
+            "email": "support@workdo.io"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Workdo\\InstagramChat\\Providers\\InstagramChatServiceProvider",
+                "Workdo\\InstagramChat\\Providers\\ViewComposer"
+            ]
+        }
+    }
+}

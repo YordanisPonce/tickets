@@ -6,6 +6,8 @@
             'timeout' => 30,
         ],
     ]);
+    
+                            
 @endphp
 @extends('layouts.auth')
 @section('page-title')
@@ -1372,13 +1374,13 @@
     @if (isset($settings['RECAPTCHA_MODULE']) && $settings['RECAPTCHA_MODULE'] == 'yes')
         @if (isset($settings['google_recaptcha_version']) && $settings['google_recaptcha_version'] == 'v2-checkbox')
             {!! NoCaptcha::renderJs() !!}
-        @else
+        @elseif(isset($settings['NOCAPTCHA_SITEKEY']))
             <script src="https://www.google.com/recaptcha/api.js?render={{ $settings['NOCAPTCHA_SITEKEY'] }}"></script>
             <script>
                 $(document).ready(function () {
                     grecaptcha.ready(function () {
-                        grecaptcha.execute('{{ $settings['
-                            NOCAPTCHA_SITEKEY '] }}', {
+                        grecaptcha.execute('{{ $settings['NOCAPTCHA_SITEKEY'] }}', {
+                           
                             action: 'submit'
                         }).then(function (token) {
                             $('#g-recaptcha-response').val(token);
