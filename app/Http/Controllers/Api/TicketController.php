@@ -141,7 +141,6 @@ class TicketController extends Controller
             'email' => 'required|email|max:255',
             'category_id' => 'required|numeric',
             'subject' => 'required|string|max:255',
-            'status' => 'required',
             'description' => 'required',
             'priority' => 'required',
             'mobile_no' => 'nullable|regex:/^\+\d{1,3}\d{9,13}$/',
