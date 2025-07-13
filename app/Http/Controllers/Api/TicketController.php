@@ -140,10 +140,10 @@ class TicketController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
             'category_id' => 'required|numeric',
-            'is_assign' => 'required|numeric',
             'subject' => 'required|string|max:255',
             'status' => 'required',
             'description' => 'required',
+            'priority' => 'required',
             'mobile_no' => 'nullable|regex:/^\+\d{1,3}\d{9,13}$/',
         ];
 
@@ -159,37 +159,39 @@ class TicketController extends Controller
         if ($validator->fails()) {
             $messages = $validator->getMessageBag();
             $data = [];
-            return $this->error($data, $messages->first(), 200);
+            return $this->success($data, $messages->first(), 200);
         }
 
-
-        $admin = User::where('type', 'admin')->first();
-        $agent = User::firstOrCreate(
-            [
-                'email' => $request->input('email')
-            ],
-            [
-                'password' => Hash::make(uniqid()),
-                'name' => explode('@', $request->input('email'))[0],
-                'email' => $request->input('email'),
-                'avatar' => 'uploads/users-avatar/avatar.png',
-                'parent' => $admin->id,
-                'type' => 'agent',
-                'is_enable_login' => 0,
-                'lang' => 'en',
-                'created_by' => $admin->id
-            ]
-        );
-        if ($agent->wasRecentlyCreated) {
-            $agentRole = Role::where('name', 'agent')->first();
-            if ($agentRole) {
-                $agent->addRole($agentRole);
-            }
-        }
+        /* 
+                $admin = User::where('type', 'admin')->first(); */
+        /*         $agent = User::firstOrCreate(
+                    [
+                        'email' => $request->input('email')
+                    ],
+                    [
+                        'password' => Hash::make(uniqid()),
+                        'name' => explode('@', $request->input('email'))[0],
+                        'email' => $request->input('email'),
+                        'avatar' => 'uploads/users-avatar/avatar.png',
+                        'parent' => $admin->id,
+                        'type' => 'agent',
+                        'is_enable_login' => 0,
+                        'lang' => 'en',
+                        'created_by' => $admin->id
+                    ]
+                ); */
+        /*  if ($agent->wasRecentlyCreated) {
+             $agentRole = Role::where('name', 'agent')->first();
+             if ($agentRole) {
+                 $agent->addRole($agentRole);
+             }
+         } */
 
         $post = $request->all();
         $post['ticket_id'] = time();
-        $post['created_by'] = $agent->id;
+        $post['created_by'] = 1;
+        $post['status'] = "New Ticket";
+        $post['type'] = "Unassigned";
         $data = [];
 
         if ($request->hasfile('attachments')) {

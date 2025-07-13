@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Priority;
 use App\Models\Policies;
+use App\Traits\ApiResponser;
 use Illuminate\Support\Facades\Auth;
 
 class PriorityController extends Controller
 {
+
+    use ApiResponser;
     public function index(Request $request)
     {
         if (Auth::user()->isAbleTo('priority manage')) {
@@ -87,5 +90,15 @@ class PriorityController extends Controller
         } else {
             return redirect()->back()->with('error', 'Permission Denied.');
         }
+    }
+
+    public function getAll()
+    {
+
+        return $this->success(
+            data: Priority::all(),
+            message: 'Proridades'
+        );
+
     }
 }

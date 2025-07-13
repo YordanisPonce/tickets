@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\FaqController;
 use App\Http\Controllers\Api\RoleController;
 use App\Http\Controllers\Api\CustomFieldController;
+use App\Http\Controllers\PriorityController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::post('/ticket_create', [TicketController::class, 'store']);
 Route::get('/category', [CategoryController::class, 'index']);
+Route::get('/priority', [PriorityController::class, 'getAll']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
