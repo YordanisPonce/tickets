@@ -142,7 +142,6 @@ class TicketController extends Controller
             'category_id' => 'required|numeric',
             'subject' => 'required|string|max:255',
             'description' => 'required',
-            'priority' => 'required',
             'mobile_no' => 'nullable|regex:/^\+\d{1,3}\d{9,13}$/',
         ];
 
@@ -189,6 +188,7 @@ class TicketController extends Controller
         $post = $request->all();
         $post['ticket_id'] = time();
         $post['created_by'] = 1;
+        $post['priority'] = 1;
         $post['status'] = "New Ticket";
         $post['type'] = "Unassigned";
         $data = [];
