@@ -15,17 +15,17 @@ class CategoryController extends Controller
     use ApiResponser;
 
     public function index(Request $request)
-    {       
-        $categories = Category::select('id','name','parent_id','color')->paginate(10);
-    
+    {
+        $categories = Category::select('id', 'name', 'parent_id', 'color')->paginate(10);
+
         $categories = $categories->map(function ($category) use ($categories) {
             $parent = $categories->firstWhere('id', $category['parent_id']);
             $category['parent_name'] = $parent ? $parent['name'] : null;
             return $category;
         });
-          // Start Categories Analytics
+        // Start Categories Analytics
 
-          $categoriesChart = Ticket::select(
+        $categoriesChart = Ticket::select(
             [
                 'tickets.category_id',
                 'categories.name',
@@ -34,16 +34,14 @@ class CategoryController extends Controller
             ]
         )->join('categories', 'categories.id', '=', 'tickets.category_id')->groupBy('categories.id')->get();
 
-        $total_cat_ticket   = Ticket::count();
+        $total_cat_ticket = Ticket::count();
+        $chartData = [];
+        if (count($categoriesChart) > 0) {
+            foreach ($categoriesChart as $category) {
 
-        if(count($categoriesChart) > 0)
-        {
-            foreach($categoriesChart as $category)
-            {
-            
-                $cat_ticket = round((float)(($category->total / 100) * $total_cat_ticket) * 100);
+                $cat_ticket = round((float) (($category->total / 100) * $total_cat_ticket) * 100);
 
-                $chartData[]=[
+                $chartData[] = [
                     'category' => $category->name,
                     'color' => $category->color,
                     'value' => $cat_ticket,
@@ -54,8 +52,8 @@ class CategoryController extends Controller
         // End Categories Analytics
 
         $data = [
-            'category' =>$categories,
-            'category_analytics'=>$chartData,
+            'category' => $categories,
+            'category_analytics' => $chartData,
         ];
 
         return $this->success($data);
@@ -63,17 +61,18 @@ class CategoryController extends Controller
 
     public function getcategory(Request $request)
     {
-        $categories = Category::select('id','name','parent_id','color')->orderBy('id', 'desc')->get();;
-    
+        $categories = Category::select('id', 'name', 'parent_id', 'color')->orderBy('id', 'desc')->get();
+        ;
+
         $categories = $categories->map(function ($category) use ($categories) {
             $parent = $categories->firstWhere('id', $category['parent_id']);
             $category['parent_name'] = $parent ? $parent['name'] : null;
             return $category;
         });
-     
+
         $data = [
-            'category' =>$categories
-        ];  
+            'category' => $categories
+        ];
 
         return $this->success($data);
     }
@@ -83,67 +82,65 @@ class CategoryController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'name'        => 'required|string|max:255',
-                'color'       => 'required|string|max:255',
+                'name' => 'required|string|max:255',
+                'color' => 'required|string|max:255',
             ]
         );
 
         if ($validator->fails()) {
             $messages = $validator->getMessageBag();
-            $data     = [];
-            return $this->error($data , $messages->first() , 200);
+            $data = [];
+            return $this->error($data, $messages->first(), 200);
         }
 
         $post = [
-            'name'       => $request->name,
-            'color'      => $request->color,
-            'parent_id'  => $request->parent_id ?? 0,
+            'name' => $request->name,
+            'color' => $request->color,
+            'parent_id' => $request->parent_id ?? 0,
             'created_by' => creatorId(),
         ];
 
         $category = Category::create($post);
-        
+
         $data = [
-            'category' =>$category
+            'category' => $category
         ];
 
-        return $this->success($data);             
+        return $this->success($data);
     }
 
     public function update(Request $request)
-    {   
+    {
         $validator = Validator::make(
             $request->all(),
             [
-                'name'        => 'required|string|max:255',
-                'color'       => 'required|string|max:255',
+                'name' => 'required|string|max:255',
+                'color' => 'required|string|max:255',
             ]
         );
 
         if ($validator->fails()) {
             $messages = $validator->getMessageBag();
-            $data     = [];
-            return $this->error($data , $messages->first() , 200);
+            $data = [];
+            return $this->error($data, $messages->first(), 200);
         }
 
-        $category            = Category::find($request['id']);        
+        $category = Category::find($request['id']);
 
-        if($category)
-        {
-            $category->name      = $request->name;
-            $category->color     = $request->color;
+        if ($category) {
+            $category->name = $request->name;
+            $category->color = $request->color;
             $category->parent_id = $request->parent_id ?? 0;
             $category->save();
-                        
+
             $data = [
                 'category' => $category
             ];
             return $this->success($data);
-        }
-        else{
+        } else {
             $message = "Category does not exist";
-            return $this->error([] , $message , 200);
-        }  
+            return $this->error([], $message, 200);
+        }
     }
 
     public function destroy(Request $request)
@@ -151,17 +148,15 @@ class CategoryController extends Controller
         $category = Category::find($request->id);
 
         $data = [
-            'category'=>[],
-        ]; 
+            'category' => [],
+        ];
 
-        if($category)
-        {            
+        if ($category) {
             $category->delete();
             return $this->success($data);
-        }
-        else{
+        } else {
             $message = "Category does not exist";
-            return $this->error($data , $message , 200);
+            return $this->error($data, $message, 200);
         }
     }
 }
